@@ -1,0 +1,247 @@
+<!doctype html>
+<html lang="tr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <title>The Matter Kitchen — 60 Questions · Full-Bleed Fullscreen</title>
+  <!-- Gameplay typography. Google Fonts load when online; system fonts remain as offline fallback. -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Luckiest+Guy&family=Ranchers&display=swap" rel="stylesheet">
+  <style>
+    /* Stage-aware placement, selected by each original GIF's proportions and props. */
+    .team.cooking .chef-slot{
+      left:var(--cook-left,0%); top:var(--cook-top,32%);
+      width:var(--cook-width,100%); height:var(--cook-height,33.6%);
+      z-index:var(--cook-depth,5); align-items:flex-end;
+    }
+    .team.cooking .chef-slot img{
+      object-fit:contain;object-position:center bottom;
+      filter:drop-shadow(1px 5px 3px #0003);
+    }
+    .team.cooking .station-img{z-index:3}
+    .team.celebrating .chef-slot{
+      left:var(--cele-left,2%); top:var(--cele-top,29.5%);
+      width:var(--cele-width,96%); height:var(--cele-height,41%);
+      z-index:var(--cele-depth,5); align-items:flex-end;
+    }
+    .team.celebrating .chef-slot img{
+      object-fit:contain; object-position:center bottom;
+      filter:drop-shadow(0 0 10px #ffeaa0) drop-shadow(1px 5px 3px #0003);
+    }
+    .team.working-active .station-img{filter:drop-shadow(0 0 15px #ffd66f) drop-shadow(0 5px 4px #55201055)}
+    :root{--gold:#f6ce56;--font:system-ui, -apple-system, Segoe UI, sans-serif}
+    *{box-sizing:border-box}
+    html,body{height:100%;margin:0}
+    body{display:flex;align-items:center;justify-content:center;background:#24120b;overflow:hidden;font-family:var(--font)}
+    #stage{width:min(100vw,177.683vh);aspect-ratio:1672 / 941;position:relative;overflow:hidden;background:url('assets/kitchen_background.webp') center/100% 100% no-repeat;isolation:isolate;box-shadow:0 0 55px #0009}
+    .team{position:absolute;left:calc(var(--i)*25%);top:0;width:25%;height:100%;cursor:pointer;outline:0}
+    .team:focus-visible{outline:3px solid #ffd95b;outline-offset:-5px;border-radius:5px}
+    .track{position:absolute;top:20%;left:50%;width:85%;transform:translateX(-50%);aspect-ratio:2048/682;z-index:4;pointer-events:none;filter:drop-shadow(0 2px 3px #33100055)}
+    .track img{display:block;width:100%;height:100%;object-fit:contain}
+    .track .lit{position:absolute;top:45%;width:6%;aspect-ratio:1;border-radius:50%;transform:translate(-50%,-50%);background:var(--team-color);box-shadow:0 0 0 1px #fff9 inset,0 0 11px 3px var(--team-color);opacity:0;transition:opacity .25s ease}
+    .track .lit.on{opacity:1}
+    .chef-slot{position:absolute;left:10%;top:33%;width:80%;height:39%;z-index:2;display:flex;align-items:flex-end;justify-content:center;pointer-events:none;isolation:isolate}
+    .chef-slot img{display:block;width:100%;height:100%;object-fit:contain;object-position:center bottom;filter:drop-shadow(1px 5px 3px #0003)}
+    .team.reacting .chef-slot img{filter:drop-shadow(0 0 12px #ffe1a3a8) drop-shadow(1px 5px 3px #0003)}
+  /* Layout-check guide; hidden in the actual game. Press L to toggle. */
+    #stage.show-slots .chef-slot{border:2px dashed var(--team-color);background:color-mix(in srgb,var(--team-color),transparent 91%);border-radius:1rem}
+    #stage.show-slots .chef-slot:after{content:'';position:absolute;bottom:0;left:10%;right:10%;height:2px;background:var(--team-color);box-shadow:0 0 5px var(--team-color)}
+    .station-img{position:absolute;z-index:3;left:50%;top:58%;transform:translateX(-50%);width:104%;height:auto;pointer-events:none;filter:drop-shadow(1px 6px 3px #60210822);transition:filter .15s ease}
+    .team:hover .station-img,.team:focus-visible .station-img{filter:drop-shadow(0 0 9px #ffd46f) drop-shadow(0 7px 5px #55201044)}
+    .team.active .station-img{filter:drop-shadow(0 0 17px #fff0a5) drop-shadow(0 5px 4px #55201055)}
+    .team.finished .track{filter:drop-shadow(0 0 9px #ffe795)}
+    #shade{position:absolute;inset:0;z-index:7;background:#230b05a8;opacity:0;visibility:hidden;transition:opacity .18s ease;cursor:pointer}
+    #shade.open{opacity:1;visibility:visible}
+    #question-panel{position:absolute;z-index:8;top:8.5%;left:50%;width:74%;height:80%;transform:translateX(-50%) scale(.965);opacity:0;visibility:hidden;pointer-events:none;transition:transform .18s ease,opacity .18s ease;}
+    #question-panel.open{transform:translateX(-50%) scale(1);opacity:1;visibility:visible;pointer-events:auto}
+    #question-panel>.card{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;filter:drop-shadow(0 14px 8px #0005);pointer-events:none}
+    .judge{position:absolute;top:72%;height:20%;width:12%;cursor:pointer;padding:0;border:0;background:none;transition:transform .12s ease,filter .12s ease}
+    .judge img{width:100%;height:100%;object-fit:contain}
+    .judge:focus-visible{outline:3px solid #ffda70;border-radius:30px}
+    .judge:hover{transform:translateY(-3px) scale(1.05);filter:drop-shadow(0 0 5px #ffe7aa)}
+    .judge:active{transform:translateY(2px) scale(.96)}
+    #correct{left:36%}#incorrect{right:36%}
+    .flash{position:absolute;inset:0;z-index:6;pointer-events:none;opacity:0}
+    .flash.yes{animation:good .5s ease-out}
+    .flash.no{animation:bad .45s ease-out}
+    @keyframes good{0%{background:radial-gradient(circle at 50% 65%, #ffeb7488,transparent 58%);opacity:1}100%{opacity:0}}
+    @keyframes bad{0%{background:#c22c181c;opacity:1}100%{opacity:0}}
+    @media (prefers-reduced-motion:reduce){*,*:before,*:after{animation-duration:.001ms!important;transition-duration:.001ms!important}}
+
+    /* v22 – one approved 16:9 composition, live readable title and clickable button hit areas. */
+    #stage{container-type:inline-size}
+    #grand-finale[hidden],#view-finale[hidden]{display:none!important}
+    #grand-finale{position:absolute;inset:0;z-index:20;overflow:hidden;background:#a91f10}
+    .finale-art{position:absolute;inset:0;width:100%;height:100%;object-fit:fill;user-select:none;pointer-events:none}
+    #finale-heading{position:absolute;left:20%;top:9.0%;width:60%;height:12.8%;display:flex;align-items:center;justify-content:center;
+      margin:0;white-space:nowrap;font:400 3.45cqw/.96 'Luckiest Guy','Trebuchet MS',system-ui,sans-serif;
+      letter-spacing:.005em;color:#9a2d17;-webkit-text-stroke:.045em #ffefb9;
+      paint-order:stroke fill;text-shadow:0 .075em .03em #55200c90,0 .018em .02em #ffffffad}
+    #grand-finale button{position:absolute;top:82.5%;height:14%;padding:0;border:0;background:transparent;cursor:pointer;
+      display:flex;justify-content:flex-end;align-items:center;color:white;font:400 2.25cqw/.95 'Luckiest Guy','Trebuchet MS',system-ui,sans-serif;
+      letter-spacing:.005em;filter:drop-shadow(0 3px 2px #28110c55);transition:transform .15s,filter .15s}
+    #grand-finale button span{width:74%;display:block;text-align:center;margin-right:3%;padding-top:.18em;
+      text-shadow:0 .075em .06em #4d280f,0 .03em .025em #1d170f}
+    #finale-play-again{left:18.2%;width:29.9%}
+    #finale-back{left:49.0%;width:33.0%}
+    #grand-finale button:hover{transform:translateY(-2.5%) scale(1.025);filter:drop-shadow(0 5px 3px #261d1055)}
+    #grand-finale button:active{transform:translateY(1.5%) scale(.995)}
+    #grand-finale button:focus-visible{outline:.33cqw solid #fff1a6;outline-offset:-.5cqw;border-radius:4cqw}
+    #view-finale{left:26%;cursor:pointer}
+    @media(prefers-reduced-motion:reduce){#grand-finale button{transition:none}}
+
+    /* v26 — True edge-to-edge fullscreen on both 16:9 and non-16:9 displays.
+       Unlike the original min(100vw,177.683vh) canvas, this fills all viewport
+       space; image layers keep their own proportions and the kitchen wallpaper
+       crops gently rather than leaving dark letterbox bars. */
+    html:fullscreen, html:-webkit-full-screen,
+    html.matter-fullscreen { width:100%; height:100%; margin:0; overflow:hidden; }
+    html:fullscreen body, html:-webkit-full-screen body,
+    html.matter-fullscreen body { width:100vw; height:100dvh; margin:0; overflow:hidden; }
+    html:fullscreen #stage, html:-webkit-full-screen #stage,
+    html.matter-fullscreen #stage {
+      width:100vw!important;
+      height:100dvh!important;
+      min-width:100vw;
+      max-width:none;
+      min-height:100dvh;
+      max-height:none;
+      aspect-ratio:auto!important;
+      margin:0!important;
+      background-size:cover!important;
+      background-position:center center!important;
+      box-shadow:none!important;
+    }
+
+    /* Compact title footer in the clear floor area of the kitchen screen.
+       All overlays (questions, surprises, finale) naturally cover it. */
+    #game-title-logo{
+      position:absolute; z-index:5; left:50%; bottom:.3%;
+      width:30%; height:10.5%; transform:translateX(-50%);
+      object-fit:contain; object-position:center bottom;
+      pointer-events:none; user-select:none;
+      filter:drop-shadow(0 2px 2px #5b180b66);
+    }
+  </style>
+  <link rel="stylesheet" href="assets/game.css">
+</head>
+<body>
+  <main id="stage" aria-label="The Matter Kitchen game prototype">
+    <div id="teams"></div>
+    <img id="game-title-logo" src="assets/matter_kitchen_footer_logo.png" alt="The Matter Kitchen" draggable="false">
+    <div id="round-chip" class="top-chip" aria-live="polite">ROUND 1</div>
+    <button id="audio-quick-toggle" class="top-chip" type="button" aria-label="Mute or unmute game audio" aria-pressed="false">🔊 SOUND</button>
+    <button id="fullscreen-btn" class="top-chip" type="button" aria-label="Enter fullscreen" aria-pressed="false" title="Enter fullscreen (F)"><span class="fullscreen-glyph" aria-hidden="true">⛶</span><span id="fullscreen-label">FULLSCREEN</span></button>
+    <button id="settings-btn" class="top-chip" type="button" aria-label="Open teacher settings">⚙ SETTINGS</button>
+    <div id="surprise-overlay" hidden aria-live="polite">
+      <section id="surprise-card" role="dialog" aria-modal="true" aria-labelledby="surprise-title" aria-describedby="surprise-description">
+        <img id="surprise-card-image" class="surprise-card-image" src="assets/surprise_cards/coco_berries.png" alt="" draggable="false">
+        <h2 id="surprise-title">KITCHEN SURPRISE!</h2>
+        <p id="surprise-description"></p>
+        <button id="surprise-next" type="button" aria-label="Next team">
+          <img src="assets/next_team_button.png" alt="" aria-hidden="true" draggable="false">
+          <span>NEXT TEAM</span>
+        </button>
+      </section>
+    </div>
+    <!-- Approved finale artwork: no labels embedded in the background, so titles/buttons remain live and accessible. -->
+    <section id="grand-finale" class="grand-finale" role="dialog" aria-label="The Kitchen Is Ready" aria-modal="true" hidden>
+      <img class="finale-art" src="assets/finale_approved.webp" alt="Coco holds pancakes, Davy presents chocolate hearts, Boris holds vegetable soup, and Pedro serves strawberry ice cream." draggable="false">
+      <h1 id="finale-heading">THE KITCHEN IS READY!</h1>
+      <button id="finale-play-again" type="button" aria-label="Play Again"><span>PLAY AGAIN</span></button>
+      <button id="finale-back" type="button" aria-label="Back to Kitchen"><span>BACK TO KITCHEN</span></button>
+    </section>
+    <button id="view-finale" class="top-chip" type="button" hidden>VIEW FINALE</button>
+    <div id="flash" class="flash" aria-hidden="true"></div>
+    <div id="shade" aria-label="Return to kitchen" role="button" tabindex="-1"></div>
+    <section id="question-panel" aria-label="Question area" aria-hidden="true" tabindex="-1">
+      <img class="card" src="assets/question.webp" alt="">
+      <div id="question-content" aria-live="polite">
+        <div id="question-main">
+          <img id="question-visual" alt="Question illustration">
+          <div id="question-copy">
+            <div id="passage" hidden></div>
+            <div id="question-text"></div>
+          </div>
+        </div>
+      </div>
+      <button class="judge" id="correct" aria-label="Correct answer"><img src="assets/button_correct.webp" alt=""></button>
+      <button class="judge" id="incorrect" aria-label="Incorrect answer"><img src="assets/button_incorrect.webp" alt=""></button>
+    </section>
+  </main>
+  <div id="settings-modal" hidden>
+    <section id="settings-dialog" role="dialog" aria-modal="true" aria-labelledby="settings-title">
+      <div class="settings-top">
+        <div><h2 id="settings-title">⚙ Teacher Settings</h2><p>Edit the question bank • Changes stay in this browser • Back up with Export • Kitchen Surprises are automatic board messages</p></div>
+        <button id="settings-close" class="icon-exit" type="button" aria-label="Close settings">✕</button>
+      </div>
+      <div class="settings-toolbar">
+        <button type="button" data-tab="regular" class="editor-tab selected">Regular Questions (60)</button>
+        <button type="button" data-tab="surprises" class="editor-tab" hidden>Kitchen Surprises (0)</button>
+        <span class="spacer"></span>
+        <label class="event-toggle" title="Maximum two bonus challenges per team in the entire game"><input id="surprises-enabled" type="checkbox" checked> Surprises ON</label>
+        <button type="button" id="editor-add" class="editor-action">＋ Add</button>
+        <button type="button" id="editor-delete" class="editor-action danger">Delete</button>
+      </div>
+      <div class="audio-settings" aria-label="Audio Settings">
+        <div class="audio-settings-title">🔊 Audio Settings</div>
+        <label class="audio-settings-group"><input id="music-enabled" type="checkbox" checked> Background Music
+          <input id="music-volume" type="range" min="0" max="100" step="5" value="10" aria-label="Background music volume">
+          <output id="music-volume-label" for="music-volume">10%</output>
+        </label>
+        <label class="audio-settings-group"><input id="effects-enabled" type="checkbox" checked> Sound Effects
+          <input id="effects-volume" type="range" min="0" max="100" step="5" value="45" aria-label="Sound effects volume">
+          <output id="effects-volume-label" for="effects-volume">45%</output>
+        </label>
+      </div>
+      <div class="settings-content">
+        <div class="editor-browser">
+          <div class="editor-searchline">
+            <input id="editor-search" type="search" placeholder="Search questions..." aria-label="Search questions">
+            <select id="editor-topic-filter" aria-label="Filter by topic"><option value="">All topics</option></select>
+          </div>
+          <div id="editor-count" aria-live="polite"></div>
+          <div id="editor-list" aria-label="Question list"></div>
+        </div>
+        <div id="editor-form" class="editor-form">
+          <h3 id="editor-heading">Edit question</h3>
+          <div class="editor-grid">
+            <label>Question ID<input id="edit-id" readonly></label>
+            <label>Topic<input id="edit-topic" placeholder="e.g. States of Matter"></label>
+          </div>
+          <label id="edit-event-row">Surprise event<input id="edit-event" placeholder="e.g. Missing Ingredient"></label>
+          <label>Question (open answer — no choices)<textarea id="edit-question" rows="3"></textarea></label>
+          <label>Read first / short passage (optional)<textarea id="edit-passage" rows="2"></textarea></label>
+          <label>Expected answer / accepted alternatives<textarea id="edit-answer" rows="2"></textarea></label>
+          <div class="editor-grid">
+            <label>Thinking skill<input id="edit-skill" placeholder="Recall / apply / explain"></label>
+            <label class="inline-check" style="padding-top:15px"><input type="checkbox" id="edit-enabled">Include in the question bank</label>
+          </div>
+          <label>Picture brief (optional)<textarea id="edit-visual-brief" rows="2"></textarea></label>
+          <label>Picture source (asset path or URL)<input id="edit-image" placeholder="assets/question_visuals/example.svg"></label>
+          <div class="media-row">
+            <img id="editor-image-preview" class="editor-visual-preview" alt="Picture preview" hidden>
+            <label>Upload a picture (saved with your question edits)<input type="file" accept="image/*" id="editor-upload"></label>
+            <button id="editor-remove-image" class="editor-action" type="button">Remove picture</button>
+          </div>
+          <label>Teacher notes<textarea id="edit-notes" rows="2"></textarea></label>
+          <p class="editor-hint" id="bank-hint">Regular questions are shuffled for gameplay. No options are displayed to students.</p>
+        </div>
+      </div>
+      <div class="settings-bottom">
+        <div id="editor-status" role="status">Edit questions, then Save changes.</div>
+        <button id="editor-export" type="button" class="editor-action">Export JSON</button>
+        <button id="editor-import" type="button" class="editor-action">Import JSON</button>
+        <input type="file" id="import-file" accept="application/json,.json" hidden>
+        <button id="editor-defaults" type="button" class="editor-action danger">Restore defaults</button>
+        <button id="new-game" type="button" class="editor-action">New Game</button>
+        <button id="editor-save" type="button" class="editor-action primary">Save changes</button>
+      </div>
+    </section>
+  </div>
+<script src="assets/questions.js"></script>
+<script src="assets/audio.js"></script>
+<script src="assets/game.js"></script>
+</body>
+</html>

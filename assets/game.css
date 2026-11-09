@@ -1,0 +1,172 @@
+/* The Matter Kitchen v15 — frozen last frames and raised judging buttons */
+#stage .top-chip {position:absolute;z-index:5;top:1.6%;display:flex;align-items:center;gap:.5em;border:2px solid #ffd773;border-radius:100px;background:linear-gradient(#fff2c9,#f7d697);box-shadow:0 4px 0 #9e361a,0 8px 14px #39120c6b;color:#842d20;font:900 clamp(11px,1.15vw,21px)/1.1 'Trebuchet MS',system-ui,sans-serif;letter-spacing:.035em;padding:.55em 1.1em;white-space:nowrap}
+#round-chip{left:1.7%;pointer-events:none}
+#settings-btn{right:1.7%;cursor:pointer;transition:transform .15s, filter .15s}
+#settings-btn:hover{transform:translateY(-2px);filter:brightness(1.05)}
+#settings-btn:focus-visible{outline:3px solid #fff5cb}
+#settings-btn svg{width:1.1em;height:1.1em}
+#question-panel .judge{top:71.5%;height:18%;width:12%}
+#question-panel:focus{outline:none}
+#stage.question-open .top-chip{visibility:hidden}
+/* Student-facing card: question and judging buttons ONLY. No titles or answer controls. */
+#question-content{
+  position:absolute;inset:24% 12.3% 27%;z-index:1;
+  display:flex;justify-content:center;align-items:center;
+  color:#633b29;text-align:center;pointer-events:none;
+}
+#question-main{display:flex;justify-content:center;align-items:center;gap:2.2%;width:100%;height:100%}
+#question-copy{display:flex;flex:1;min-width:0;max-height:100%;flex-direction:column;justify-content:center;align-items:stretch;gap:.9em;overflow:hidden}
+#question-text{font:900 clamp(22px,2.55vw,44px)/1.25 'Trebuchet MS',system-ui,sans-serif;overflow-wrap:break-word;white-space:pre-wrap;text-wrap:balance}
+#passage{color:#664536;font:600 clamp(13px,1.55vw,27px)/1.36 'Trebuchet MS',sans-serif;background:#fff7e2;border-left:5px solid #e6ba6e;border-radius:11px;padding:.65em .85em;white-space:pre-wrap}
+#question-content.with-passage #question-text{font-size:clamp(19px,2.15vw,37px)}
+#question-content.with-picture #question-copy{text-align:left}
+#question-content.with-picture #question-text{font-size:clamp(19px,2.25vw,38px)}
+#question-visual{width:35%;height:95%;object-fit:contain;filter:drop-shadow(0 4px 3px #8b59352b);display:none;flex:0 0 35%}
+#question-content.with-picture #question-visual{display:block}
+#question-content.with-picture.with-passage #question-visual{width:29%;flex-basis:29%}
+#question-content.with-picture.with-passage #question-text{font-size:clamp(17px,1.9vw,33px)}
+#question-empty{position:absolute;inset:27% 16% 38%;display:flex;align-items:center;justify-content:center;color:#a35a36;font-size:clamp(18px,2.2vw,34px);text-align:center;font-weight:800}
+/* Full-screen settings editor is independent of the 16:9 stage. */
+[hidden]{display:none!important}
+#settings-modal{position:fixed;inset:0;z-index:50;background:#230e0ad9;backdrop-filter:blur(5px);display:flex;align-items:center;justify-content:center;padding:clamp(8px,2vw,26px);font-family:'Trebuchet MS',system-ui,sans-serif;color:#573528}
+#settings-dialog{width:min(1140px,98vw);height:min(795px,95dvh);background:#fff8e8;border:5px solid #f3bc64;border-radius:23px;box-shadow:0 20px 0 #7b2b1d88,0 20px 80px #0009;display:flex;flex-direction:column;overflow:hidden}
+.settings-top{background:linear-gradient(135deg,#d9432a,#a52c20);color:white;padding:14px 24px;display:flex;align-items:center;gap:12px;justify-content:space-between;border-bottom:6px solid #e9a742}
+.settings-top h2{margin:0;font-size:clamp(21px,2.5vw,30px);font-weight:900;letter-spacing:.01em}
+.settings-top p{font-size:13px;margin:4px 0 0;color:#fff1d6}
+.icon-exit{border:2px solid #ffdfa1;color:white;border-radius:100px;background:#861c16;width:37px;height:37px;cursor:pointer;font-weight:900;font-size:18px}
+.settings-toolbar{display:flex;align-items:center;gap:9px;flex-wrap:wrap;padding:12px 20px;background:#fff0d6;border-bottom:1px solid #dfc9a5}
+.settings-toolbar .spacer{flex:1}
+.editor-tab,.editor-action{border-radius:999px;padding:9px 13px;border:2px solid #c68c56;background:#fffbf0;color:#7e3c29;font-weight:900;cursor:pointer;font-size:13px;white-space:nowrap}
+.editor-tab.selected{background:#cf472c;border-color:#b12e1d;color:white}
+.editor-action.primary{background:#3f9e71;border-color:#287249;color:white}
+.editor-action.danger{color:#9f2b24}
+.editor-action:focus-visible,.editor-tab:focus-visible{outline:3px solid #ffc155}
+.settings-content{display:grid;grid-template-columns:minmax(265px,36%) 1fr;flex:1;min-height:0}
+.editor-browser{display:flex;flex-direction:column;border-right:1px solid #e5cfa9;background:#fff6e6;min-height:0}
+.editor-searchline{padding:14px;display:flex;flex-wrap:wrap;gap:8px;border-bottom:1px solid #ecdaba}
+.editor-searchline input,.editor-searchline select{border:2px solid #deba87;border-radius:10px;padding:9px;font-size:13px;background:white;color:#603c2e;min-width:0}
+.editor-searchline input{flex:1;width:120px}
+#editor-count{padding:8px 16px;font-weight:800;color:#96613d;font-size:12px}
+#editor-list{overflow-y:auto;flex:1;min-height:0}
+.editor-row{display:flex;text-align:left;gap:7px;align-items:flex-start;width:100%;border:0;border-bottom:1px solid #efdfc7;background:none;padding:10px 14px;cursor:pointer;color:#623f2f}
+.editor-row:hover{background:#f9e4c4}
+.editor-row.current{background:#ffe0aa;box-shadow:inset 4px 0 #c7442a}
+.editor-row .id{flex:0 0 47px;border-radius:7px;background:#fff;border:1px solid #e9c796;color:#8f6142;padding:4px;text-align:center;font-weight:800;font-size:11px}
+.editor-row .question-snippet{display:block;font-size:13px;line-height:1.28;font-weight:700}
+.editor-row .category-snippet{display:block;color:#9d6b4b;font-size:11px;margin-top:3px}
+.editor-row.off{opacity:.45}
+.editor-form{overflow:auto;padding:15px 22px;min-height:0;background:#fffaf0;display:flex;flex-direction:column;gap:12px}
+.editor-form h3{font-size:20px;color:#963622;margin:0}
+.editor-form label{display:flex;flex-direction:column;gap:5px;font-size:12px;font-weight:900;color:#855034;letter-spacing:.01em}
+.editor-form input:not([type='checkbox']):not([type='file']),.editor-form select,.editor-form textarea{width:100%;border:2px solid #e1c69c;background:white;border-radius:10px;padding:10px 11px;font:600 14px/1.45 'Trebuchet MS',sans-serif;color:#533c2d;resize:vertical}
+.editor-form textarea{min-height:65px}
+.editor-form input:focus-visible,.editor-form textarea:focus-visible,.editor-form select:focus-visible{outline:3px solid #ffca68}
+.editor-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.editor-form .inline-check{flex-direction:row;align-items:center;gap:8px}
+.editor-form .inline-check input{width:18px;height:18px;accent-color:#cf472c}
+.editor-hint{margin:0;color:#936846;font-size:12px;line-height:1.45}
+.editor-visual-preview{width:100px;height:100px;object-fit:contain;border:1px solid #ead2ad;border-radius:13px;background:#fff7e7}
+.editor-form .media-row{display:flex;align-items:center;gap:12px}
+#editor-empty{display:flex;flex:1;align-items:center;justify-content:center;font-weight:700;color:#a66c42}
+.settings-bottom{padding:11px 18px;background:#fff0d6;border-top:1px solid #e0bf86;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+#editor-status{flex:1;font-weight:700;color:#7f5436;font-size:12px;min-width:140px}
+#editor-status.error{color:#ac2f24}
+@media(max-width:760px){#settings-dialog{height:98dvh} .settings-content{grid-template-columns:1fr;grid-template-rows:34% 66%}.editor-browser{border-right:0;border-bottom:2px solid #e4c79b}.editor-form{padding:12px}.editor-grid{grid-template-columns:1fr}.settings-toolbar{gap:6px;padding:7px}.editor-tab,.editor-action{font-size:11px;padding:7px 9px}.settings-bottom{padding:8px}}
+
+/* v19: the approved PNG surprise cards are the entire card surface.
+   All labels are live HTML, not burned into the PNGs. */
+#surprise-overlay[hidden]{display:none!important}
+#surprise-overlay{position:absolute;inset:0;z-index:12;background:#1b0d09c9;backdrop-filter:blur(4px);display:flex;align-items:center;justify-content:center;animation:surprise-enter .28s ease both}
+@keyframes surprise-enter{from{opacity:0}to{opacity:1}}
+#surprise-card{position:relative;box-sizing:border-box;width:82%;aspect-ratio:1672/941;overflow:visible;border:0;background:transparent;filter:drop-shadow(0 14px 16px #160c07a8);text-align:center;font-family:'Trebuchet MS',system-ui,sans-serif}
+#surprise-card-image{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;pointer-events:none;user-select:none}
+#surprise-title{position:absolute;left:25%;top:21%;width:50%;margin:0;color:#fff6df;text-shadow:0 2px 3px #6b221e,0 1px 1px #542016;font-size:clamp(16px,2.0vw,39px);font-weight:1000;letter-spacing:.025em;line-height:1.12;transform:rotate(-1deg)}
+#surprise-description{position:absolute;top:35%;left:30%;width:64%;margin:0;color:#603a2b;font-size:clamp(13px,1.65vw,31px);font-weight:900;line-height:1.24;text-wrap:balance;text-shadow:0 1px #fff6e9;max-height:20%;overflow:hidden}
+#surprise-next{position:absolute;left:34%;top:84%;width:32%;height:auto;aspect-ratio:3/1;padding:0;border:0;background:none;cursor:pointer;display:grid;place-items:center;filter:drop-shadow(0 5px 5px #60221364);transition:transform .15s ease,filter .15s ease;z-index:2}
+#surprise-next>img{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;pointer-events:none}
+#surprise-next>span{position:relative;z-index:2;display:block;color:white;font-weight:1000;font-size:clamp(12px,1.7vw,31px);letter-spacing:.03em;text-shadow:0 2px 2px #9c351f;transform:translateX(-7%)}
+#surprise-next:hover{transform:translateY(-3px) scale(1.035);filter:drop-shadow(0 7px 7px #60221388)}
+#surprise-next:active{transform:translateY(1px) scale(.985)}
+#surprise-next:focus-visible{outline:4px solid #ffdc66;border-radius:999px;outline-offset:-4px}
+.event-toggle{display:flex;align-items:center;gap:5px;white-space:nowrap;color:#843b2a;font-weight:900;font-size:13px;background:#fff6e2;border:2px solid #d5a16a;padding:7px 12px;border-radius:30px;cursor:pointer}
+.event-toggle input{accent-color:#d34f37;width:16px;height:16px}
+#surprise-overlay.power-event{background:#111a2ec4;animation:surprise-enter .25s ease both,one-blackout .8s ease-in-out}
+@keyframes one-blackout{0%,30%{background-color:#000b19}40%{background-color:#243553}56%{background-color:#050a18}100%{background-color:transparent}}
+@media(max-width:750px){#surprise-card{width:91%}#surprise-title{font-size:clamp(13px,2.2vw,22px)}#surprise-description{font-size:clamp(10px,1.7vw,18px)}#surprise-next>span{font-size:clamp(11px,1.8vw,20px)}}
+@media(prefers-reduced-motion:reduce){#surprise-overlay{animation:none!important}#surprise-next{transition:none!important}}
+
+/* v20 — approved game typography: Luckiest Guy (titles and controls), Ranchers (student questions and story sentences).
+   Fonts are retrieved from Google Fonts when a network connection is available.
+   The teacher's form fields intentionally keep a practical, editable system font. */
+:root{--title-font:'Luckiest Guy','Trebuchet MS',system-ui,sans-serif;--reading-font:'Ranchers','Trebuchet MS',system-ui,sans-serif}
+#stage .top-chip,.settings-top h2,.editor-form h3{font-family:var(--title-font);font-weight:400;letter-spacing:.015em}
+#stage .top-chip{padding-top:.72em;padding-bottom:.48em;font-size:clamp(12px,1.28vw,22px)}
+#question-text{font-family:var(--reading-font);font-weight:400;line-height:1.3;letter-spacing:.012em;font-size:clamp(22px,2.52vw,43px)}
+#passage{font-family:var(--reading-font);font-weight:400;line-height:1.36;font-size:clamp(14px,1.45vw,26px);letter-spacing:.004em}
+#question-content.with-passage #question-text{font-size:clamp(18px,2.05vw,35px)}
+#question-content.with-picture #question-text{font-size:clamp(18px,2.18vw,37px)}
+#question-content.with-picture.with-passage #question-text{font-size:clamp(17px,1.8vw,31px)}
+#surprise-title{font-family:var(--title-font);font-weight:400;font-size:clamp(18px,2.1vw,39px);letter-spacing:.012em;line-height:1.13}
+#surprise-description{font-family:var(--reading-font);font-weight:400;font-size:clamp(14px,1.55vw,29px);letter-spacing:.012em;line-height:1.29;top:35%;max-height:22%;}
+#surprise-next>span{font-family:var(--title-font);font-weight:400;letter-spacing:.012em;font-size:clamp(13px,1.8vw,32px);padding-top:.13em}
+#settings-btn,#editor-heading{font-family:var(--title-font)}
+@media(max-width:750px){#surprise-description{font-size:clamp(11px,1.55vw,20px)}#surprise-title{font-size:clamp(14px,2.1vw,24px)}#surprise-next>span{font-size:clamp(12px,1.7vw,22px)}}
+
+/* Audio controls; teacher-facing settings use legible system type. */
+#audio-quick-toggle{left:11%;cursor:pointer;min-width:90px;justify-content:center;transition:transform .15s, filter .15s}
+#audio-quick-toggle:hover{transform:translateY(-2px);filter:brightness(1.06)}
+#audio-quick-toggle:focus-visible{outline:3px solid #ffe794}
+.audio-settings{padding:8px 19px;display:flex;align-items:center;gap:14px;flex-wrap:wrap;background:#fff9ed;border-bottom:1px solid #e0c395;font:600 13px/1.2 'Trebuchet MS',system-ui,sans-serif;color:#683b2b}
+.audio-settings-title{font-weight:900;white-space:nowrap}
+.audio-settings-group{display:flex;align-items:center;gap:8px;min-height:28px;white-space:nowrap}
+.audio-settings-group input[type="checkbox"]{width:16px;height:16px;accent-color:#c44b2c}
+.audio-settings-group input[type="range"]{width:112px;accent-color:#b64b26;cursor:pointer}
+.audio-settings-group output{font-size:12px;font-variant-numeric:tabular-nums;min-width:33px;text-align:right}
+@media(max-width:860px){.audio-settings{gap:6px 10px;padding:6px 10px;font-size:11px}.audio-settings-group input[type="range"]{width:78px}#audio-quick-toggle{left:12%;font-size:clamp(10px,1.1vw,16px)}}
+
+/* v23: persistent fullscreen toggle for classroom/projector use. */
+#fullscreen-btn{right:12.8%;cursor:pointer;transition:transform .15s,filter .15s}
+#fullscreen-btn:hover{transform:translateY(-2px);filter:brightness(1.05)}
+#fullscreen-btn:focus-visible{outline:3px solid #fff5cb}
+#fullscreen-btn .fullscreen-glyph{font-family:system-ui,sans-serif;font-size:1.12em;font-weight:900;line-height:1}
+@media(max-width:900px){#fullscreen-btn{right:15%;padding-left:.65em!important;padding-right:.65em!important}#fullscreen-label{display:none}}
+
+/* v27: larger classroom-friendly questions, while keeping the card and buttons unchanged. */
+#question-content {
+  inset:26% 10.8% 30%;
+}
+#question-text {
+  font-size:clamp(33px,4.1cqw,72px);
+  line-height:1.14;
+  letter-spacing:.006em;
+}
+#question-content.with-picture #question-text {
+  font-size:clamp(28px,3.65cqw,60px);
+  line-height:1.17;
+}
+#question-content.with-passage #question-text {
+  font-size:clamp(28px,3.7cqw,65px);
+}
+#question-content.with-picture.with-passage #question-text {
+  font-size:clamp(24px,3.0cqw,54px);
+}
+#question-visual {width:36%;flex-basis:36%;height:100%}
+
+/* v28: classroom-readable Kitchen Surprise wording only. Keep artwork, popup,
+   and Next Team button sizing and positions unchanged. */
+#surprise-title {
+  font-size: clamp(24px, 2.65cqw, 47px);
+  line-height: 1.08;
+}
+#surprise-description {
+  font-size: clamp(20px, 2.22cqw, 40px);
+  line-height: 1.18;
+  letter-spacing: .005em;
+  max-height: 32%;
+}
+@media (max-width: 750px) {
+  #surprise-title { font-size: clamp(18px, 2.65cqw, 30px); }
+  #surprise-description { font-size: clamp(15px, 2.22cqw, 26px); }
+}
+/* Keep taller Ranchers letterforms fully visible at the new size. */
+#surprise-description { overflow: visible; }
